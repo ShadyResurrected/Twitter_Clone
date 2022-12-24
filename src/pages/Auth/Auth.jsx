@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import "./Auth.css";
 import Logo from "../../img/logo.png";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logIn, signUp } from "../../redux/actions/AuthAction";
 
 const Auth = () => {
+  const loading = useSelector((state) => state.AuthReducer.loading);
   const [isSignUp, setIsSignUp] = useState(true);
   const dispatch = useDispatch();
+  console.log(loading);
   const [data, setData] = useState({
     firstname: "",
     lastname: "",
@@ -30,8 +32,8 @@ const Auth = () => {
       data.password === data.confirmpass
         ? dispatch(signUp(data))
         : setConfirmPass(false);
-    }else{
-      dispatch(logIn(data))
+    } else {
+      dispatch(logIn(data));
     }
   };
 
@@ -139,8 +141,8 @@ const Auth = () => {
                 : "Don't have an account? Sign Up"}
             </span>
           </div>
-          <button className="button infoButton" type="submit">
-            {isSignUp ? "Signup" : "Log In"}
+          <button className="button infoButton" type="submit" disabled={loading}>
+            {loading ? "Loading..." : isSignUp ? "Signup" : "Log In"}
           </button>
         </form>
       </div>
