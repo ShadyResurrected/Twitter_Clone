@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon  --experimental-modules --es-module-specifier-resolution=node index.js"
   },
   "author": "",
   "license": "ISC",
@@ -17,6 +17,7 @@
     "express": "^4.18.1",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^6.3.4",
+    "multer": "^1.4.5-lts.1",
     "nodemon": "^2.0.16"
   }
 }
