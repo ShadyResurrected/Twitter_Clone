@@ -7,27 +7,65 @@ import { UilLocationPoint } from "@iconscout/react-unicons";
 import { UilSchedule } from "@iconscout/react-unicons";
 import { UilTimes } from "@iconscout/react-unicons";
 
+import { useDispatch, useSelector } from "react-redux";
+import { uploadImage, uploadPost } from "../../redux/actions/UploadAction";
 
 const PostShare = () => {
+  const loading = useSelector((state) => state.postReducer.uploading);
   const [image, setImage] = useState(null);
   const imageRef = useRef();
+  const { user } = useSelector((state) => state.AuthReducer.authData);
+  const desc = useRef();
+  const dispatch = useDispatch();
 
   const onImageChange = (event) => {
     if (event.target.files && event.target.files[0]) {
       let img = event.target.files[0];
-      setImage({
-        image: URL.createObjectURL(img),
-      });
+      setImage(img);
     }
+  };
+
+  const reset = () => {
+    setImage(null);
+    desc.current.value = "";
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const newPost = {
+      userId: user._id,
+      desc: desc.current.value,
+    };
+
+    if (image) {
+      const data = new FormData();
+      const filename = Date.now() + image.name;
+      data.append("name", filename);
+      data.append("file", image);
+      newPost.image = filename;
+      console.log(newPost);
+
+      try {
+        dispatch(uploadImage(data));
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    dispatch(uploadPost(newPost));
+    reset()
   };
   return (
     <div className="PostShare">
       <img src={ProfileImage} alt="" />
       <div>
-        <input type="text" placeholder="What's happening" />
+        <input type="text" placeholder="What's happening" ref={desc} required />
         <div className="postOptions">
-          <div className="option" style={{ color: "var(--photo)" }}
-          onClick={()=>imageRef.current.click()}
+          <div
+            className="option"
+            style={{ color: "var(--photo)" }}
+            onClick={() => imageRef.current.click()}
           >
             <UilScenery />
             Photo
@@ -44,7 +82,13 @@ const PostShare = () => {
             <UilSchedule />
             Shedule
           </div>
-          <button className="button ps-button">Share</button>
+          <button
+            className="button ps-button"
+            onClick={handleSubmit}
+            disabled={loading}
+          >
+            {loading ? "Uploading..." : "Share"}
+          </button>
           <div style={{ display: "none" }}>
             <input
               type="file"
@@ -54,16 +98,12 @@ const PostShare = () => {
             />
           </div>
         </div>
-      {image && (
-
-        <div className="previewImage">
-          <UilTimes onClick={()=>setImage(null)}/>
-          <img src={image.image} alt="" />
-        </div>
-
-      )}
-
-
+        {image && (
+          <div className="previewImage">
+            <UilTimes onClick={() => setImage(null)} />
+            <img src={URL.createObjectURL(image)} alt="" />
+          </div>
+        )}
       </div>
     </div>
   );
