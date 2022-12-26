@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const API = axios.create({baseURL : "http://localhost:5000"})
+const API = axios.create({baseURL : "https://twitter-clone-server-gopw.onrender.com"})
 
 export const getTimelinePosts = (id) => API.get(`/post/${id}/timeline`)
 
