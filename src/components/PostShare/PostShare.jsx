@@ -18,6 +18,8 @@ const PostShare = () => {
   const desc = useRef();
   const dispatch = useDispatch();
 
+  const serverPublic = process.env.REACT_APP_PUBLIC_FOLDER
+
   const onImageChange = (event) => {
     if (event.target.files && event.target.files[0]) {
       let img = event.target.files[0];
@@ -58,7 +60,7 @@ const PostShare = () => {
   };
   return (
     <div className="PostShare">
-      <img src={ProfileImage} alt="" />
+      <img src={user.profilePicutre ? serverPublic + user.profilePicutre : serverPublic + "DefImages/def_profile_pic.png"} alt="" />
       <div>
         <input type="text" placeholder="What's happening" ref={desc} required />
         <div className="postOptions">
